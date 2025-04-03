@@ -15,7 +15,7 @@ Uma extensão destas é a classe de Redes de Petri Coloridas (CPN), que introduz
 Este projeto propõe utilizar desse modelo a partir da ferramenta gráfica **CPN Tools**  para modelar um sistema de manufatura comporto por células de manufatura como as ilustradas na figura 1:
 
 <div style="text-align: center;">
-    <img src="imagens/Célula.png" alt="Célula de Manufatura" />
+    <img src="imagens/Célula de Manufatura.png" alt="Célula de Manufatura" />
     <p><strong>Figura 1:</strong> Cálula de MAnufatura.</p>
 </div>
 
@@ -33,7 +33,7 @@ A priori, cada elemento do sistema foi desenhado no software como lugar ou trans
 O esquema de uma célula de manufatura é apresentado na figura 2.
 
 <div style="text-align: center;">
-    <img src="imagens/Esquema.png" alt="Esquema de uma Célula" />
+    <img src="imagens/Esquema de uma Célula.png" alt="Esquema de uma Célula" />
     <p><strong>Figura 2:</strong> Esquema de uma Célula de Manufatura.<br>Fonte: O próprio autor</p>
 </div>
 
