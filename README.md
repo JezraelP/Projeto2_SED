@@ -2,7 +2,7 @@
 
 ## Introdução
 
-As **Redes de Petri** são uma poderosa ferramenta matemática e gráfica para modelar, analisar e simular sistemass dinâmicosa eventos discretos. Elas foram introduzidas por Carl Adam Petri em 1962 e são amplamente utilizadas para a maodelagem de fluxos de trabalho, redes de computadores, sistemas distribuídos, entre outroas aplicaçãoes.
+As **Redes de Petri** são uma poderosa ferramenta matemática e gráfica para modelar, analisar e simular sistemas dinâmicos a eventos discretos. Elas foram introduzidas por Carl Adam Petri em 1962 e são amplamente utilizadas para a maodelagem de fluxos de trabalho, redes de computadores, sistemas distribuídos, entre outras aplicações.
 
 A estrutura de uma Rede de Petri consiste em quatro elementos principais:
 - Places: Podem representar estados, consições ou recursos no sistema;
@@ -10,16 +10,16 @@ A estrutura de uma Rede de Petri consiste em quatro elementos principais:
 - Arches: Conectam os *places* e as *transitions*, indicando o fluxo entre eles;
 - Tokens: Representam a distribuição de recursos ou o estado atual do sistema.
   
-Uma extensão destas é a classe de Redes de Petri Coloridas (CPN), que introduzem o conceito de cor. Com isso, cada *token* pode ser diferenciado por atributos, permitindo representar informações adicionais sobre o sistema. As CPNs permitem modelar sistemas mais complexos sem aumentar significativamente a quantidade de lugares e transições no sistema, ideias para lidar com sistemas que apresetnam múltiplos tipos de objetos ou recursos, e possui uma base matemática formal sólida que permite realizar análises rigorosas, comoa  identificação de gargalos ou comportamentos indesejados.
+Uma extensão daquelas é a classe de Redes de Petri Coloridas (CPN), que introduzem o conceito de cor. Com isso, cada *token* pode ser diferenciado por atributos, permitindo representar informações adicionais sobre o sistema. As CPNs permitem modelar sistemas mais complexos sem aumentar significativamente a quantidade de lugares e transições no sistema, ideias para lidar com sistemas que apresetnam múltiplos tipos de objetos ou recursos, e possuem uma base matemática formal sólida que permite realizar análises rigorosas, comoa  identificação de gargalos ou comportamentos indesejados.
 
-Este projeto propõe utilizar desse modelo a partir da ferramenta gráfica **CPN Tools**  para modelar um sistema de manufatura comporto por células de manufatura como as ilustradas na figura 1:
+Este projeto propõe utilizar esses modelos a partir da ferramenta gráfica **CPN Tools**  para modelar um sistema de manufatura composto por células de manufatura como as ilustradas na figura 1:
 
 <div style="text-align: center;">
     <img src="imagens/Célula de Manufatura.png" alt="Célula de Manufatura" />
     <p><strong>Figura 1:</strong> Cálula de MAnufatura.</p>
 </div>
 
-Cada célula apresenta duas rotas para os recursos: i e j. Ambas as rotas passam pelo robô 1, máquina 1 e robô 2. Nesse momento, as rotas se dividem para as máquinas 2 e 3, passam pelo robô 3 e seguem para a saída da célula. O sistema apresenta uma capacidade, de modo que os depósios de entrada e saída das máquinas suportam no máximo 4 itens(*tokens*), e não deve apresentar bloqueios.
+Cada célula apresenta duas rotas para os recursos: i e j. Ambas as rotas passam pelo robô 1, máquina 1 e robô 2. Nesse momento, as rotas se dividem para as máquinas 2 e 3, passam pelo robô 3 e seguem para a saída da célula. O sistema apresenta uma capacidade máxima, de modo que os depósios de entrada e saída das máquinas suportam no máximo 4 itens(*tokens*), e não deve apresentar bloqueios.
 
 
 ## Vídeo Explicativo
@@ -49,9 +49,7 @@ As cores de uma CPN são determinados no software pela declaração de *colorset
 colset ROUTE = with i | j;
 colset PACKAGE = record route: ROUTE * id: INT;
 ```
-Para controlar a quantidade de tokens em um lugar na CPN, é necessária a utilziação de um *anti-place*, declarado tipo **E**, que fisicamente não faz parte do sistema, mas como o CPN não oferece um método para lidar diretamente com limites de tokens, é necessário essa aplicação, onde para cada lugar da rede, existe um *anti-place* que controla a quantidade de *tokens* máximos no lugar correspondente.
-
-Note na imagem, que a robô 2 e o robô 3 são represetnados por duas transições cada, uma vez que é a ação de transporte do robô, a represetnada por uma transição, e não o robô em si. De modo que, o evento de transportar a carga do depósito de saída da máquina 1 para o depósito de entrada da máquina 2 e para o da máquina 3 são duas transições diferentes, bem como transportar o recurso dos depósitos de entrada de duas máquians diferentes para a saída da célula.
+Para controlar a quantidade de tokens em um lugar na CPN, é necessária a utilziação de um *anti-place*, declarado como tipo **E**, que fisicamente não faz parte do sistema, mas como o CPN Tools não oferece um método para lidar diretamente com limites de tokens, é necessário essa aplicação, onde para cada lugar da rede, existe um *anti-place* que controla a quantidade de *tokens* máximos no lugar correspondente.
 
 A posteriori, é implementado um sistema de hierarquias, onde cada transição presente na estrutura das células é substituído por uma sub rede. Nesse projeto, foram implementados três tipos de subredes:
 
@@ -64,7 +62,7 @@ A transição que representa o processo realizado pela máuina é contruído seg
     <p><strong>Figura 3:</strong> Esquema de Máquina.<br>Fonte: O próprio autor</p>
 </div>
 
-Nesse modelo, nota-se que a máquina transmite um *token* de um place a outro, eatualiza os contadores ou *anti-places*.
+Nesse modelo, nota-se que a máquina transmite um *token* de um place a outro, e atualiza os contadores ou *anti-places*.
 
 ### Robô inicial
 
@@ -86,7 +84,7 @@ O modelo do robô divisor é representado pela rede ilustrada na figura 5:
     <p><strong>Figura 5:</strong> Esquema do Robô Divisor.<br>Fonte: O próprio autor</p>
 </div>
 
-Esse robô é responsável por separar itens entre duas rotas, ele transfere os *tokens* do place de saída de uma máquina, para dois places de entrada diferentes, a depender do tipo de rota do item. Além disso, atualiza os contadores tanto do place de saída da máquina, como de ambos os places de entrada das máquinas eguintes. Note que as transições dependem do tipo *route* presente no colorset de cada item. Esse modelo pode ser implementado para qualquer robô que divida os itens recebidos em duas rotas diferentes.
+Esse robô é responsável por separar itens entre duas rotas, ele transfere os *tokens* do place de saída de uma máquina, para dois places de entrada diferentes, a depender do tipo de rota do item. Além disso, atualiza os contadores tanto do place de saída da máquina, como de ambos os places de entrada das máquinas seguintes. Note que as transições dependem do tipo *route* presente no colorset de cada item. Esse modelo pode ser implementado para qualquer robô que divida os itens recebidos em duas rotas diferentes.
 
 ### Robô Final
 
@@ -97,7 +95,7 @@ O modelo do robô final é ilutrado na figura 6:
     <p><strong>Figura 6:</strong> Esquema do Robô Final.<br>Fonte: O próprio autor</p>
 </div>
 
-O papel do robô final nessa célula é receber os tokens dos depósitos de saída das máquinas 2 e 3 e tranportá-los ao depósito de saída da célula, e atualizar os contadores dos primeiros. Note que como o depósito de saída da célula não impõe limite de itens, esse modelo precisa ser ajustado caso fosse utilizado para transferir itens de rotas diferentes para uma mesma rota, que passará por outra máquina, uma vez que o depósito da máquina não pode exceder 4 itens. Então esse modelo não pode ser utilizado como intermediário, e só é viável na saída da célula. Para ajustar esse modelo de forma que atue como "*robô unificador*" interediário, basta adicionar a associação da transição com o *anti-place* correspondente à entrada da máquina para a qual o robô transferirá os itens.
+O papel do robô final nessa célula é receber os tokens dos depósitos de saída das máquinas 2 e 3 e tranportá-los ao depósito de saída da célula, e atualizar os contadores dos primeiros. Note que como o depósito de saída da célula não impõe limite de itens, esse modelo precisa ser ajustado caso fosse utilizado para transferir itens apenas entre máquinas, uma vez que o depósito dessa não pode exceder 4 itens. Então esse modelo não pode ser utilizado como intermediário, e só é viável na saída da célula. Para ajustar esse modelo de forma que atue como "*robô unificador*" interediário, basta adicionar a associação da transição com o *anti-place* correspondente à entrada da máquina para a qual o robô transferirá os itens.
 
 ### Fábrica
 
