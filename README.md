@@ -1,4 +1,4 @@
-# Modelagem de um Sistema de Manufatura
+ # Modelagem de um Sistema de Manufatura
 
 ## Introdução
 
@@ -24,10 +24,15 @@ Cada célula apresenta duas rotas para os recursos: i e j. Ambas as rotas passam
 
 ## Vídeo Explicativo
 
+Aqui segue o link para um vídeo no youtube contendo uma breve explicação do sistema:
+[\[CPN - Projeto SED\](https://youtu.be/uXaDAl3lCRE)](https://youtu.be/MWK04njh60E)
+
 ## Materiais e Método
 
 Para a modelagem e análise gráfica do sitema de manufatura, foi utilizado o software [CPN Tools](http://cpntools.org), desenvolvido pela universidade de Aarhus, Dinamarca, e está disponível gratuitamente para usos não comerciais.
 Esse software fornece ferramentas gráficas e em linguagem *Standard ML* para simulação de CPNs de forma intuitiva e completa.
+
+### Célula
 
 A priori, cada elemento do sistema foi desenhado no software como lugar ou transição. Os depósitos de entrada e saída, tanto das máquinas como das células são lugares de uma CPN. As transições representam a movimentação dos robôs que transportam a carga de um lugar a outro e o processo realizado pelas máquinas, que não é analisado no escopo do projeto, e é abstraído, bastando apenas o conhecimento de que as máquinas 2 e 3 recebem tipos diferentes de recurso.
 O esquema de uma célula de manufatura é apresentado na figura 2.
@@ -36,6 +41,7 @@ O esquema de uma célula de manufatura é apresentado na figura 2.
     <img src="imagens/Esquema de uma Célula.png" alt="Esquema de uma Célula" />
     <p><strong>Figura 2:</strong> Esquema de uma Célula de Manufatura.<br>Fonte: O próprio autor</p>
 </div>
+
 
 As cores de uma CPN são determinados no software pela declaração de *colorsets*, uma definição de tipo de dado, que especifica características dos *tokens*. O tipo de dado(cor) transmitido na célula é definido como PACKAGE, um *colorset* composto por um *colorset* inteiro, que serve apenas para identificação do recurso, e outro **ROUTE** do tipo **i** ou **j**, que determina a rota que o recurso deve seguir. Eles são declarados da seguinte maneira:
 
@@ -47,7 +53,64 @@ Para controlar a quantidade de tokens em um lugar na CPN, é necessária a utilz
 
 Note na imagem, que a robô 2 e o robô 3 são represetnados por duas transições cada, uma vez que é a ação de transporte do robô, a represetnada por uma transição, e não o robô em si. De modo que, o evento de transportar a carga do depósito de saída da máquina 1 para o depósito de entrada da máquina 2 e para o da máquina 3 são duas transições diferentes, bem como transportar o recurso dos depósitos de entrada de duas máquians diferentes para a saída da célula.
 
-##Resultados e Conclusões
+A posteriori, é implementado um sistema de hierarquias, onde cada transição presente na estrutura das células é substituído por uma sub rede. Nesse projeto, foram implementados três tipos de subredes:
+
+### Máquina
+
+A transição que representa o processo realizado pela máuina é contruído seguindo a estrutura da figura 3:
+
+<div style="text-align: center;">
+    <img src="imagens/Máquina.png" alt="Máquina" />
+    <p><strong>Figura 3:</strong> Esquema de Máquina.<br>Fonte: O próprio autor</p>
+</div>
+
+Nesse modelo, nota-se que a máquina transmite um *token* de um place a outro, eatualiza os contadores ou *anti-places*.
+
+### Robô inicial
+
+O robô inicial (Entrada da Célula -> Entrada da Máquina 1) é represetnado pelo modelo na figura 4:
+
+<div style="text-align: center;">
+    <img src="imagens/Robô Inicial.png" alt="Robô Inicial" />
+    <p><strong>Figura 4:</strong> Esquema do Robô Inicial.<br>Fonte: O próprio autor</p>
+</div>
+
+Nesse modelo de robô, ele retira o token do place de entrada da célula e o transmite para o place de entrada da máquina 1, e atualiza o place referente a esse place. Note que como a entrada da célula não possui limite de itens, não há outro *anti-place* associado a essa transição. Caso seja implementado um robô intermediário entre duas máquinas, será necessário criar outra subrede apropriada para esse robô, semelhante ao robô inicial ilustrado, mas associado a mais um *anti-place*, referente à entrada da máquina anterior à transição.
+
+### Robô Divisor
+
+O modelo do robô divisor é representado pela rede ilustrada na figura 5:
+
+<div style="text-align: center;">
+    <img src="imagens/Robô Divisor.png" alt="Robô Divisor" />
+    <p><strong>Figura 5:</strong> Esquema do Robô Divisor.<br>Fonte: O próprio autor</p>
+</div>
+
+Esse robô é responsável por separar itens entre duas rotas, ele transfere os *tokens* do place de saída de uma máquina, para dois places de entrada diferentes, a depender do tipo de rota do item. Além disso, atualiza os contadores tanto do place de saída da máquina, como de ambos os places de entrada das máquinas eguintes. Note que as transições dependem do tipo *route* presente no colorset de cada item. Esse modelo pode ser implementado para qualquer robô que divida os itens recebidos em duas rotas diferentes.
+
+### Robô Final
+
+O modelo do robô final é ilutrado na figura 6:
+
+<div style="text-align: center;">
+    <img src="imagens/Robô Final.png" alt="Robô Final" />
+    <p><strong>Figura 6:</strong> Esquema do Robô Final.<br>Fonte: O próprio autor</p>
+</div>
+
+O papel do robô final nessa célula é receber os tokens dos depósitos de saída das máquinas 2 e 3 e tranportá-los ao depósito de saída da célula, e atualizar os contadores dos primeiros. Note que como o depósito de saída da célula não impõe limite de itens, esse modelo precisa ser ajustado caso fosse utilizado para transferir itens de rotas diferentes para uma mesma rota, que passará por outra máquina, uma vez que o depósito da máquina não pode exceder 4 itens. Então esse modelo não pode ser utilizado como intermediário, e só é viável na saída da célula. Para ajustar esse modelo de forma que atue como "*robô unificador*" interediário, basta adicionar a associação da transição com o *anti-place* correspondente à entrada da máquina para a qual o robô transferirá os itens.
+
+### Fábrica
+
+Após a modelagem  de cada componente das células, elas são então utilizadas como subredes substitutas para um sistema de hierarquia maior: A fábrica, ilustrada na figura 7:
+
+<div style="text-align: center;">
+    <img src="imagens/Fábrica.png" alt="Fábrica" />
+    <p><strong>Figura 7:</strong> Esquema da Fabrica.<br>Fonte: O próprio autor</p>
+</div>
+
+Nesse sistema, há 4 transições substitutas, que representam o processo realizado por cada célula. Um place inicial é criado para representar a criação de itens, transferidos pela transição não nomeada para os depósitos de entrada de cada célula. 
+
+## Resultados e Conclusões
 Essa estrutura cumpre os requisitos do projeto, onde os dados de cor **i** são transportados pela rota **i** da *figura 1*, e os dados de cor **j** são transportados pela rota **j**. Além disso, os depósitos de entrada e saída das máquinas possuem um limite de 4 itens por vez, de modo que ao atingir esse limite, a transição anterior a este lugar é desabilitada. E por fim, o sistema não apresenta bloqueio. A simulação automática do sistema ocorreu sem problemas e imprevistos. Todos os dados da entrada da célula são transportados para a saída da mesma via sua rota correspondente.
 
 Pode-se dizer que o uso de uma CPN foi extremamente eficiente em modelar o sistema de manufatura, e que a ferramenta CPN Tools foi eficiente na esquematização, modelagem gráfica e simulação da CPN utilizada para represetnar o modelo deste projeto.
