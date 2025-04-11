@@ -16,7 +16,7 @@ Este projeto propõe utilizar esses modelos a partir da ferramenta gráfica **CP
 
 <div style="text-align: center;">
     <img src="imagens/Célula de Manufatura.png" alt="Célula de Manufatura" />
-    <p><strong>Figura 1:</strong> Cálula de MAnufatura.</p>
+    <p><strong>Figura 1:</strong> Célula de Manufatura.</p>
 </div>
 
 Cada célula apresenta duas rotas para os recursos: i e j. Ambas as rotas passam pelo robô 1, máquina 1 e robô 2. Nesse momento, as rotas se dividem para as máquinas 2 e 3, passam pelo robô 3 e seguem para a saída da célula. O sistema apresenta uma capacidade máxima, de modo que os depósios de entrada e saída das máquinas suportam no máximo 4 itens(*tokens*), e não deve apresentar bloqueios.
